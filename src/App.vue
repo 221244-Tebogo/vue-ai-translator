@@ -10,6 +10,10 @@
       ></textarea>
 
       <select v-model="targetLang">
+        <option value="af">Afrikaans</option>
+        <option value="zu">Zulu</option>
+        <option value="xh">Xhosa</option>
+        <option value="st">Sesotho</option>
         <option value="fr">French</option>
         <option value="es">Spanish</option>
         <option value="de">German</option>
@@ -30,16 +34,26 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue';
+import { ref } from 'vue';
+import { translateText } from './services/translator';
 
-  const inputText = ref('');
-  const targetLang = ref('fr');
-  const translatedText = ref('');
-  const loading = ref(false);
+const inputText = ref('');
+const targetLang = ref('fr');
+const translatedText = ref('');
+const loading = ref(false);
 
-  const handleTranslate = async () => {
-    //TODO: call service file
-  };
+const handleTranslate = async () => {
+  if (!inputText.value.trim()) return;
+  loading.value = true;
+  translatedText.value = '';
+  try {
+    translatedText.value = await translateText(inputText.value, targetLang.value);
+  } catch (err) {
+    translatedText.value = "Error translating text.";
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
 <style scoped>
